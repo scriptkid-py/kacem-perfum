@@ -1,0 +1,9 @@
+# robots.txt — Kacem Perfum
+# Block admin dashboard from all search engine crawlers
+User-agent: *
+Disallow: /admin.html
+Disallow: /admin
+Allow: /
+
+# Point to sitemap
+Sitemap: https://kacemperfum.netlify.app/sitemap.xml

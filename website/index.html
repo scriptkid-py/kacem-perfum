@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kacem Perfumerie — عطور فاخرة أصيلة</title>
+  <meta name="description" content="Kacem Perfumerie — متجر عطور متخصص في زيوت العطر الأصيلة والعطور المستوحاة من أشهر الماركات العالمية بتراكيز متعددة وأحجام متنوعة مع توصيل سريع في الجزائر." />
+  <meta name="keywords" content="عطور, زيوت عطرية, عطور جزائر, كاسم بيرفيوم, عطور مستوحاة, عطور رجالية, عطور نسائية, تراكيز عطور, perfume algerie" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://kacemperfum.netlify.app/" />
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type"        content="website" />
+  <meta property="og:site_name"   content="Kacem Perfumerie" />
+  <meta property="og:url"         content="https://kacemperfum.netlify.app/" />
+  <meta property="og:title"       content="Kacem Perfumerie — عطور فاخرة أصيلة وزيوت عطرية" />
+  <meta property="og:description" content="زيوت عطرية أصيلة وعطور مستوحاة بتراكيز متعددة (x2 إلى x10) وأحجام متنوعة مع توصيل لكافة الولايات الجزائرية." />
+  <meta property="og:image"       content="images/hero-bg.jpg" />
+  <meta property="og:locale"      content="ar_DZ" />
+
+  <!-- Twitter -->
+  <meta name="twitter:card"        content="summary_large_image" />
+  <meta name="twitter:title"       content="Kacem Perfumerie — عطور فاخرة أصيلة" />
+  <meta name="twitter:description" content="زيوت عطرية أصيلة وعطور مستوحاة بتراكيز متعددة وأحجام متنوعة." />
+  <meta name="twitter:image"       content="images/hero-bg.jpg" />
+
+  <!-- Theme color for browser chrome -->
+  <meta name="theme-color" content="#0a0a0a" />
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+
+  <!-- LocalBusiness / Perfumery JSON-LD Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Perfumery",
+    "name": "Kacem Perfumerie",
+    "alternateName": "كاسم بيرفيوم",
+    "description": "متجر عطور متخصص في زيوت العطر الأصيلة والعطور المستوحاة من أشهر الماركات العالمية بتراكيز متعددة وأحجام متنوعة.",
+    "url": "https://kacemperfum.netlify.app/",
+    "image": "https://kacemperfum.netlify.app/images/hero-bg.jpg",
+    "priceRange": "$$",
+    "currenciesAccepted": "DZD",
+    "paymentAccepted": "Cash on Delivery",
+    "address": {
+      "@type": "PostalAddress",
+      "addressCountry": "DZ",
+      "addressRegion": "Alger",
+      "addressLocality": "Alger"
+    },
+    "openingHoursSpecification": [
+      {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": ["Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday"],
+        "opens": "09:00",
+        "closes": "21:00"
+      }
+    ]
+  }
+  </script>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Cairo:wght@300;400;600;700&family=Cormorant+Garamond:ital,wght@0,400;1,400&display=swap" rel="stylesheet" />
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- ════════════════════════════════════════════════
+     NAVIGATION
+     ════════════════════════════════════════════════ -->
+<header role="banner">
+  <nav id="navbar" aria-label="التنقل الرئيسي">
+    <div class="container nav-inner">
+
+      <!-- Logo -->
+      <a href="#hero" class="nav-logo" aria-label="العودة للصفحة الرئيسية">
+        <span class="nav-logo-ar" data-shop-name>Kacem Perfumerie</span>
+        <span class="nav-logo-en">Kacem Perfum</span>
+      </a>
+
+      <!-- Desktop links -->
+      <ul class="nav-links" role="list">
+        <li><a href="#best-sellers">الأكثر مبيعاً</a></li>
+        <li><a href="#catalog">منتجاتنا</a></li>
+        <li><a href="#why-us">لماذا نحن</a></li>
+        <li><a href="#reviews">آراء العملاء</a></li>
+        <li><a href="#about">عن المحل</a></li>
+        <li><a href="#contact">تواصل معنا</a></li>
+      </ul>
+
+      <!-- Cart + Hamburger -->
+      <div class="nav-actions">
+        <button id="cart-btn" aria-label="السلة" aria-haspopup="true" aria-expanded="false">
+          <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
+               stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+            <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+            <line x1="3" y1="6" x2="21" y2="6"/>
+            <path d="M16 10a4 4 0 0 1-8 0"/>
+          </svg>
+          <span id="cart-count" aria-live="polite" aria-atomic="true">0</span>
+        </button>
+
+        <button id="menu-toggle" aria-label="فتح القائمة" aria-controls="mobile-menu" aria-expanded="false">
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Mobile menu -->
+  <div id="mobile-menu" role="dialog" aria-label="قائمة التنقل المحمول" aria-modal="true">
+    <a href="#best-sellers">⭐ الأكثر مبيعاً</a>
+    <a href="#catalog">🛍️ منتجاتنا</a>
+    <a href="#why-us">✨ لماذا نحن</a>
+    <a href="#reviews">💬 آراء العملاء</a>
+    <a href="#about">📍 عن المحل</a>
+    <a href="#contact">📲 تواصل معنا</a>
+  </div>
+</header>
+
+<!-- ════════════════════════════════════════════════
+     HERO SECTION
+     ════════════════════════════════════════════════ -->
+<main id="main-content">
+<section id="hero" aria-label="الصفحة الرئيسية">
+  <div class="hero-bg" role="img" aria-label="عطور فاخرة على خلفية مخملية سوداء"></div>
+  <div class="hero-overlay" aria-hidden="true"></div>
+  <div class="hero-particles" aria-hidden="true"></div>
+
+  <div class="hero-content">
+    <div class="hero-badge" aria-label="علامة المتجر">✦ الأصالة والفخامة معاً ✦</div>
+    <h1 class="hero-title" data-shop-name>Kacem Perfumerie</h1>
+    <p class="hero-subtitle">زيوت عطرية أصيلة وعطور مستوحاة من أجمل روائح العالم — تدوم طويلاً، بأسعار تناسب الجميع</p>
+    <div class="hero-actions">
+      <button id="hero-shop-now" class="btn btn-gold" aria-label="تصفح منتجاتنا">
+        🛒 تسوق الآن
+      </button>
+      <a href="#about" class="btn btn-outline">📍 موقعنا</a>
+    </div>
+  </div>
+
+  <div class="hero-scroll" aria-hidden="true">
+    <span class="scroll-indicator">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2"
+           stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+        <polyline points="6 9 12 15 18 9"/>
+      </svg>
+    </span>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════
+     BEST SELLERS
+     ════════════════════════════════════════════════ -->
+<section id="best-sellers" class="section" aria-labelledby="bs-title">
+  <div class="container">
+    <div class="section-title"><h2 id="bs-title"><span>⭐ الأكثر مبيعاً</span></h2></div>
+    <div class="gold-divider" aria-hidden="true"></div>
+    <p class="section-subtitle">اكتشف أكثر عطورنا طلباً وأحبها لدى زبائننا</p>
+    <div id="best-sellers-grid" class="products-grid" role="list" aria-label="قائمة الأكثر مبيعاً">
+      <!-- Rendered by JS -->
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════
+     FULL CATALOG
+     ════════════════════════════════════════════════ -->
+<section id="catalog" class="section" aria-labelledby="catalog-title">
+  <div class="container">
+    <div class="section-title"><h2 id="catalog-title"><span>🛍️ كل منتجاتنا</span></h2></div>
+    <div class="gold-divider" aria-hidden="true"></div>
+    <p class="section-subtitle">تشكيلة واسعة من الزيوت والعطور المستوحاة لكل ذوق</p>
+
+    <!-- Controls -->
+    <div class="catalog-controls" role="search" aria-label="بحث وتصفية المنتجات">
+      <div class="filter-tabs" role="tablist" aria-label="تصفية حسب الفئة">
+        <button class="filter-btn active" data-filter="all"    role="tab" aria-selected="true">الكل</button>
+        <button class="filter-btn"        data-filter="oils"   role="tab" aria-selected="false">زيوت</button>
+        <button class="filter-btn"        data-filter="men"    role="tab" aria-selected="false">رجالي</button>
+        <button class="filter-btn"        data-filter="women"  role="tab" aria-selected="false">نسائي</button>
+        <button class="filter-btn"        data-filter="unisex" role="tab" aria-selected="false">مشترك</button>
+      </div>
+      <div class="search-wrap">
+        <label for="search-input" class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)">البحث في المنتجات</label>
+        <input
+          id="search-input"
+          type="search"
+          placeholder="🔍 ابحث عن عطر..."
+          autocomplete="off"
+          aria-label="البحث في المنتجات"
+        />
+        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor"
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+      </div>
+    </div>
+
+    <div id="catalog-grid" class="products-grid" role="list" aria-label="قائمة المنتجات">
+      <!-- Rendered by JS -->
+    </div>
+
+    <div id="no-results" aria-live="polite">
+      <p style="font-size:3rem;margin-bottom:1rem">🔍</p>
+      <p>لا توجد نتائج تطابق بحثك — جرّب كلمة مختلفة أو اختر فئة أخرى.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════
+     WHY CHOOSE US
+     ════════════════════════════════════════════════ -->
+<section id="why-us" class="section" aria-labelledby="why-title">
+  <div class="container">
+    <div class="section-title"><h2 id="why-title"><span>✨ لماذا تختارنا؟</span></h2></div>
+    <div class="gold-divider" aria-hidden="true"></div>
+    <p class="section-subtitle">نقدم لك التميز والجودة في كل قطرة</p>
+
+    <div class="features-grid" role="list">
+      <article class="feature-card" role="listitem">
+        <div class="feature-icon" aria-hidden="true">🌿</div>
+        <h3 class="feature-title">جودة عالية</h3>
+        <p class="feature-text">نختار أجود المواد العطرية من مصادر موثوقة لضمان رائحة أصيلة وثابتة.</p>
+      </article>
+      <article class="feature-card" role="listitem">
+        <div class="feature-icon" aria-hidden="true">⏳</div>
+        <h3 class="feature-title">ثبات طويل</h3>
+        <p class="feature-text">عطورنا تدوم ساعات طويلة على البشرة والملابس — رائحتك لا تُنسى.</p>
+      </article>
+      <article class="feature-card" role="listitem">
+        <div class="feature-icon" aria-hidden="true">💰</div>
+        <h3 class="feature-title">أسعار مناسبة</h3>
+        <p class="feature-text">فخامة حقيقية بأسعار في متناول الجميع — لأن الرقي لا يعني الغلاء.</p>
+      </article>
+      <article class="feature-card" role="listitem">
+        <div class="feature-icon" aria-hidden="true">🚚</div>
+        <h3 class="feature-title">توصيل سريع</h3>
+        <p class="feature-text">نوصل طلبك إلى باب منزلك بسرعة وأمان في معظم مناطق الجزائر.</p>
+      </article>
+      <article class="feature-card" role="listitem">
+        <div class="feature-icon" aria-hidden="true">📲</div>
+        <h3 class="feature-title">خدمة مميزة</h3>
+        <p class="feature-text">فريقنا دائماً متاح عبر واتساب لمساعدتك في اختيار العطر المناسب لك.</p>
+      </article>
+      <article class="feature-card" role="listitem">
+        <div class="feature-icon" aria-hidden="true">🎁</div>
+        <h3 class="feature-title">تغليف أنيق</h3>
+        <p class="feature-text">نوصل منتجاتنا في تغليف جميل ومحكم — مثالي للهدايا والمناسبات.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════
+     CUSTOMER REVIEWS
+     ════════════════════════════════════════════════ -->
+<section id="reviews" class="section" aria-labelledby="reviews-title">
+  <div class="container">
+    <div class="section-title"><h2 id="reviews-title"><span>💬 آراء عملائنا</span></h2></div>
+    <div class="gold-divider" aria-hidden="true"></div>
+    <p class="section-subtitle">تجارب حقيقية من زبائن راضين — شاركنا رأيك عبر واتساب</p>
+
+    <div class="reviews-grid" role="list">
+
+      <article class="review-card" role="listitem">
+        <div class="review-stars" aria-label="5 نجوم">★★★★★</div>
+        <p class="review-text">"عطر عود الملوك رائع جداً، دام عليّ أكثر من 12 ساعة وكان الجميع يسأل عنه. أنصح به بشدة!"</p>
+        <footer>
+          <p class="review-author">أ. يوسف م.</p>
+          <p class="review-date">الجزائر العاصمة</p>
+        </footer>
+      </article>
+
+      <article class="review-card" role="listitem">
+        <div class="review-stars" aria-label="5 نجوم">★★★★★</div>
+        <p class="review-text">"طلبت عطر زهرة القمر وكان أجمل من توقعاتي! التغليف أنيق والتوصيل كان في نفس اليوم. شكراً Kacem Perfumerie."</p>
+        <footer>
+          <p class="review-author">أ. سارة ب.</p>
+          <p class="review-date">وهران</p>
+        </footer>
+      </article>
+
+      <article class="review-card" role="listitem">
+        <div class="review-stars" aria-label="5 نجوم">★★★★★</div>
+        <p class="review-text">"منذ أن تعاملت مع هذا المحل لم أبحث في مكان آخر. الجودة ممتازة والأسعار معقولة جداً قياساً بما تحصل عليه."</p>
+        <footer>
+          <p class="review-author">أ. كريم ل.</p>
+          <p class="review-date">قسنطينة</p>
+        </footer>
+      </article>
+
+      <article class="review-card" role="listitem">
+        <div class="review-stars" aria-label="4 نجوم">★★★★☆</div>
+        <p class="review-text">"عطر الفارس فاق توقعاتي! خشبي وعميق تماماً كما أريد. سأعود للطلب مجدداً."</p>
+        <footer>
+          <p class="review-author">أ. نور ع.</p>
+          <p class="review-date">تيزي وزو</p>
+        </footer>
+      </article>
+
+      <article class="review-card" role="listitem">
+        <div class="review-stars" aria-label="5 نجوم">★★★★★</div>
+        <p class="review-text">"الخدمة عبر واتساب ممتازة، ساعدوني في اختيار العطر المناسب لزوجي وكان هدية مثالية."</p>
+        <footer>
+          <p class="review-author">أ. أمال ه.</p>
+          <p class="review-date">البليدة</p>
+        </footer>
+      </article>
+
+      <article class="review-card" role="listitem">
+        <div class="review-stars" aria-label="5 نجوم">★★★★★</div>
+        <p class="review-text">"زيت ورد الشرق أصبح عطري اليومي. رائحة جميلة وهادئة، تدوم طويلاً. سعر مناسب جداً!"</p>
+        <footer>
+          <p class="review-author">أ. إيمان ر.</p>
+          <p class="review-date">عنابة</p>
+        </footer>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════
+     ABOUT / ADDRESS / MAP
+     ════════════════════════════════════════════════ -->
+<section id="about" class="section" aria-labelledby="about-title">
+  <div class="container">
+    <div class="section-title"><h2 id="about-title"><span>📍 عن <span data-shop-name>Kacem Perfumerie</span></span></h2></div>
+    <div class="gold-divider" aria-hidden="true"></div>
+    <p class="section-subtitle">من قلب الجزائر، نجلب لك أجمل الروائح</p>
+
+    <div class="about-grid">
+      <div class="about-text">
+        <p>
+          <strong data-shop-name>Kacem Perfumerie</strong> متجر متخصص في بيع الزيوت العطرية الأصيلة والعطور المستوحاة من أشهر العطور العالمية.
+          نؤمن بأن الرائحة الجميلة حق للجميع، لذلك نحرص على تقديم جودة عالية بأسعار في متناول كل شخص.
+        </p>
+        <p>
+          كل عطر في مجموعتنا مختار بعناية فائقة ليمنحك تجربة شمية لا تُنسى — سواء للاستخدام اليومي أو في المناسبات الخاصة.
+        </p>
+
+        <div class="about-info-list" aria-label="معلومات المحل">
+
+          <div class="about-info-item">
+            <span class="about-info-icon" aria-hidden="true">📍</span>
+            <div>
+              <span class="about-info-label">العنوان</span>
+              <!-- ↓ REPLACE with your real address -->
+              <span class="about-info-value">شارع [اسم الشارع]، حي [اسم الحي]، [المدينة]، الجزائر</span>
+            </div>
+          </div>
+
+          <div class="about-info-item">
+            <span class="about-info-icon" aria-hidden="true">🕐</span>
+            <div>
+              <span class="about-info-label">أوقات العمل</span>
+              <!-- ↓ REPLACE with your real hours -->
+              <span class="about-info-value">السبت – الخميس: 09:00 صباحاً – 09:00 مساءً | الجمعة: مغلق</span>
+            </div>
+          </div>
+
+          <div class="about-info-item">
+            <span class="about-info-icon" aria-hidden="true">📲</span>
+            <div>
+              <span class="about-info-label">واتساب / هاتف</span>
+              <span class="about-info-value" data-shop-phone>+213 XX XX XX XX</span>
+            </div>
+          </div>
+
+          <div class="about-info-item">
+            <span class="about-info-icon" aria-hidden="true">🚚</span>
+            <div>
+              <span class="about-info-label">التوصيل</span>
+              <!-- ↓ REPLACE with your delivery info -->
+              <span class="about-info-value">متاح لمعظم ولايات الجزائر — الدفع عند الاستلام</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Map -->
+      <div class="map-container" aria-label="خريطة موقع المحل">
+        <!--
+          HOW TO ADD YOUR REAL MAP:
+          1. Go to maps.google.com and search for your shop address.
+          2. Click Share → Embed a map → Copy the iframe code.
+          3. Paste it here to replace the placeholder below.
+        -->
+        <div class="map-placeholder">
+          <span aria-hidden="true">🗺️</span>
+          <p style="color:var(--clr-text-muted);font-size:0.9rem">
+            استبدل هذا المكان بكود خريطة Google Maps الخاصة بمحلك.<br/>
+            <small style="color:var(--clr-text-dim)">(راجع ملف دليل التعديل)</small>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════
+     CONTACT
+     ════════════════════════════════════════════════ -->
+<section id="contact" class="section" aria-labelledby="contact-title">
+  <div class="container">
+    <div class="section-title"><h2 id="contact-title"><span>📲 تواصل معنا</span></h2></div>
+    <div class="gold-divider" aria-hidden="true"></div>
+    <p class="section-subtitle">نحن هنا لمساعدتك في اختيار العطر المثالي</p>
+
+    <div class="contact-grid">
+      <!-- Left: CTA + channels -->
+      <div>
+        <h3 class="contact-cta-title">هل تحتاج مساعدة؟</h3>
+        <p class="contact-cta-text">
+          تواصل معنا مباشرة عبر واتساب، أو زر محلنا للتجربة الشخصية.
+          فريقنا سيساعدك في اختيار العطر الأنسب لذوقك ومناسبتك.
+        </p>
+        <div class="contact-channels">
+          <!-- WhatsApp -->
+          <a
+            href="https://wa.me/213XXXXXXXXX"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="contact-channel"
+            aria-label="تواصل معنا عبر واتساب"
+            id="contact-wa-link"
+            data-wa-link
+          >
+            <span class="contact-channel-icon" aria-hidden="true">💬</span>
+            <div>
+              <span class="contact-channel-label">واتساب (الأسرع)</span>
+              <span class="contact-channel-value" data-shop-phone>+213 XX XX XX XX</span>
+            </div>
+          </a>
+          <!-- Shop hours -->
+          <div class="contact-channel">
+            <span class="contact-channel-icon" aria-hidden="true">🕐</span>
+            <div>
+              <span class="contact-channel-label">أوقات العمل</span>
+              <!-- ↓ REPLACE -->
+              <span class="contact-channel-value">السبت – الخميس: 09:00 – 21:00</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Delivery info card -->
+      <div class="delivery-card" aria-label="معلومات التوصيل">
+        <h3 class="delivery-title">🚚 معلومات التوصيل والدفع</h3>
+        <ul class="delivery-list" role="list">
+          <!-- ↓ REPLACE with your real areas, price, timing -->
+          <li class="delivery-item">التوصيل متاح لمعظم ولايات الجزائر</li>
+          <li class="delivery-item">مدة التوصيل: 24 إلى 48 ساعة عادةً</li>
+          <li class="delivery-item">الدفع عند الاستلام (كاش)</li>
+          <li class="delivery-item">يمكن الدفع عبر تحويل بنكي مسبقاً</li>
+          <li class="delivery-item">التوصيل مجاناً للطلبات التي تتجاوز 5000 دج</li>
+          <li class="delivery-item">تغليف مجاني وأنيق لجميع الطلبات</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main><!-- /main-content -->
+
+<!-- ════════════════════════════════════════════════
+     FOOTER
+     ════════════════════════════════════════════════ -->
+<footer role="contentinfo">
+  <div class="container">
+    <div class="footer-grid">
+
+      <!-- Brand -->
+      <div>
+        <p class="footer-brand-name" data-shop-name>Kacem Perfumerie</p>
+        <p class="footer-tagline">زيوت عطرية أصيلة وعطور مستوحاة بجودة عالية وأسعار مناسبة — من الجزائر لكل مكان.</p>
+        <div class="footer-social" aria-label="روابط التواصل الاجتماعي">
+          <a
+            href="https://wa.me/213XXXXXXXXX"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="social-btn"
+            aria-label="واتساب"
+            id="footer-wa-link"
+            data-wa-link
+          >💬</a>
+        </div>
+      </div>
+
+      <!-- Quick links -->
+      <nav aria-label="روابط سريعة">
+        <p class="footer-col-title">روابط سريعة</p>
+        <ul class="footer-links" role="list">
+          <li><a href="#best-sellers">الأكثر مبيعاً</a></li>
+          <li><a href="#catalog">كل المنتجات</a></li>
+          <li><a href="#why-us">لماذا نحن؟</a></li>
+          <li><a href="#reviews">آراء العملاء</a></li>
+        </ul>
+      </nav>
+
+      <!-- Info -->
+      <nav aria-label="معلومات إضافية">
+        <p class="footer-col-title">معلومات</p>
+        <ul class="footer-links" role="list">
+          <li><a href="#about">عن المحل</a></li>
+          <li><a href="#contact">تواصل معنا</a></li>
+          <li><a href="#contact">التوصيل والدفع</a></li>
+        </ul>
+      </nav>
+    </div>
+
+    <div class="footer-bottom">
+      <p class="footer-copy">© 2026 <span data-shop-name>Kacem Perfumerie</span> — جميع الحقوق محفوظة.</p>
+      <p class="footer-copy" style="font-size:0.72rem;color:var(--clr-text-dim)">
+        العطور المستوحاة ليست تقليداً للماركات — هي تفسيرنا الإبداعي لعائلات الروائح العالمية.
+      </p>
+    </div>
+  </div>
+</footer>
+
+<!-- ════════════════════════════════════════════════
+     CART OVERLAY + SIDEBAR
+     ════════════════════════════════════════════════ -->
+<div id="cart-overlay" role="dialog" aria-modal="true" aria-label="سلة التسوق">
+  <aside id="cart-sidebar">
+    <div class="cart-header">
+      <h2 class="cart-title">🛒 سلة التسوق</h2>
+      <button id="cart-close" aria-label="إغلاق السلة">✕</button>
+    </div>
+    <div id="cart-items-list" aria-live="polite" aria-relevant="all">
+      <!-- Rendered by JS -->
+    </div>
+    <div class="cart-footer">
+      <div class="cart-total-row">
+        <span class="cart-total-label">الإجمالي:</span>
+        <span id="cart-total-amount" class="cart-total-amount" aria-live="polite">0 دج</span>
+      </div>
+      <div class="cart-footer-btns">
+        <button id="cart-order-wa" class="btn btn-wa" disabled aria-label="إرسال الطلب عبر واتساب">
+          📲 اطلب الكل عبر واتساب
+        </button>
+        <button id="cart-clear" class="btn btn-outline" disabled aria-label="تفريغ السلة">
+          🗑️ تفريغ السلة
+        </button>
+      </div>
+    </div>
+  </aside>
+</div>
+
+<!-- ════════════════════════════════════════════════
+     FLOATING WHATSAPP BUTTON
+     ════════════════════════════════════════════════ -->
+<a
+  id="wa-fab"
+  href="https://wa.me/213XXXXXXXXX"
+  target="_blank"
+  rel="noopener noreferrer"
+  aria-label="تواصل معنا عبر واتساب"
+  title="تواصل معنا عبر واتساب"
+  data-wa-link
+>
+  💬
+</a>
+
+<!-- Toast notification -->
+<div id="toast" role="status" aria-live="polite" aria-atomic="true"></div>
+
+<!-- Scroll to top button -->
+<button id="scroll-top" aria-label="العودة إلى الأعلى" title="العودة إلى الأعلى">▲</button>
+
+<!-- Scripts — order matters: products first, then app logic -->
+<script src="products.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
