@@ -1,0 +1,1495 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- Disallow search engines from indexing admin dashboard -->
+  <meta name="robots" content="noindex, nofollow" />
+  <title>لوحة التحكم — كاسم بيرفيوم</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    /* Admin specific dashboard styles */
+    .admin-body {
+      background: #0a0a0a;
+      min-height: 100vh;
+      color: var(--clr-text);
+      font-family: var(--font-arabic);
+      padding-bottom: 5rem;
+    }
+
+    /* Auth screen modal */
+    #auth-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 10, 10, 0.95);
+      backdrop-filter: blur(12px);
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      transition: opacity 0.3s ease;
+    }
+    #auth-overlay.hidden {
+      display: none;
+    }
+    .auth-box {
+      background: #141414;
+      border: 1px solid var(--clr-border-glow);
+      border-radius: var(--radius-lg);
+      padding: 2.5rem 2rem;
+      max-width: 420px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.8), var(--shadow-gold);
+      animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    @keyframes popIn {
+      from { transform: scale(0.9); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+    .auth-icon {
+      font-size: 3rem;
+      margin-bottom: 0.8rem;
+      display: inline-block;
+      filter: drop-shadow(0 0 10px rgba(201,168,76,0.5));
+    }
+    .auth-title {
+      font-size: 1.6rem;
+      color: var(--clr-gold);
+      margin-bottom: 0.4rem;
+      font-weight: 700;
+    }
+    .auth-subtitle {
+      font-size: 0.9rem;
+      color: var(--clr-text-muted);
+      margin-bottom: 1.8rem;
+    }
+    .auth-input-wrap {
+      position: relative;
+      margin-bottom: 1.2rem;
+    }
+    .auth-input {
+      width: 100%;
+      padding: 0.9rem 1.2rem;
+      padding-left: 3rem;
+      background: #0a0a0a;
+      border: 1px solid var(--clr-border);
+      border-radius: var(--radius-sm);
+      color: #fff;
+      font-size: 1.1rem;
+      text-align: center;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .auth-input:focus {
+      border-color: var(--clr-gold);
+      box-shadow: 0 0 15px rgba(201,168,76,0.3);
+    }
+    .toggle-pass-btn {
+      position: absolute;
+      left: 0.8rem;
+      top: 50%;
+      transform: translateY(-50%);
+      background: transparent;
+      border: none;
+      color: var(--clr-text-muted);
+      cursor: pointer;
+      font-size: 1.1rem;
+      padding: 0.3rem;
+    }
+    .auth-error {
+      color: #ff6b6b;
+      font-size: 0.85rem;
+      margin-top: 0.5rem;
+      display: none;
+    }
+    .auth-error.visible {
+      display: block;
+      animation: shake 0.3s ease;
+    }
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-6px); }
+      40%, 80% { transform: translateX(6px); }
+    }
+
+    /* Admin Navigation */
+    .admin-nav {
+      background: #111;
+      border-bottom: 1px solid var(--clr-border);
+      padding: 0.9rem 1.5rem;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(8px);
+    }
+    .admin-nav-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .admin-brand {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--clr-gold);
+    }
+    .admin-nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+    }
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.78rem;
+      padding: 0.35rem 0.75rem;
+      border-radius: 999px;
+      background: rgba(39, 174, 96, 0.15);
+      border: 1px solid rgba(39, 174, 96, 0.4);
+      color: #4cd98b;
+    }
+    .status-badge.saving {
+      background: rgba(201,168,76,0.15);
+      border-color: rgba(201,168,76,0.4);
+      color: var(--clr-gold-light);
+    }
+
+    /* Container */
+    .admin-container {
+      max-width: 1100px;
+      margin: 1.8rem auto;
+      padding: 0 1.2rem;
+    }
+
+    /* Info Hero Box */
+    .workflow-banner {
+      background: linear-gradient(135deg, rgba(201,168,76,0.12) 0%, rgba(20,20,20,0.8) 100%);
+      border: 1px solid var(--clr-border-glow);
+      border-radius: var(--radius-md);
+      padding: 1.2rem 1.5rem;
+      margin-bottom: 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.2rem;
+      flex-wrap: wrap;
+    }
+    .workflow-text h2 {
+      font-size: 1.15rem;
+      color: var(--clr-gold-light);
+      margin-bottom: 0.3rem;
+    }
+    .workflow-text p {
+      font-size: 0.88rem;
+      color: var(--clr-text-muted);
+      line-height: 1.5;
+    }
+
+    /* Section Card */
+    .admin-card {
+      background: var(--clr-surface);
+      border: 1px solid var(--clr-border);
+      border-radius: var(--radius-md);
+      padding: 1.6rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+      transition: border-color 0.2s;
+    }
+    .admin-card:focus-within {
+      border-color: var(--clr-border-glow);
+    }
+    .card-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.4rem;
+      padding-bottom: 0.8rem;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      flex-wrap: wrap;
+      gap: 0.8rem;
+    }
+    .card-head h2 {
+      font-size: 1.3rem;
+      color: var(--clr-gold);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .card-head p {
+      font-size: 0.85rem;
+      color: var(--clr-text-muted);
+    }
+
+    /* Form Fields */
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.2rem;
+      margin-bottom: 1.2rem;
+    }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+    .form-label {
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--clr-text);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .form-label small {
+      color: var(--clr-text-dim);
+      font-weight: 400;
+    }
+    .form-input, .form-select, .form-textarea {
+      width: 100%;
+      background: #0d0d0d;
+      border: 1px solid var(--clr-border);
+      border-radius: var(--radius-sm);
+      padding: 0.75rem 1rem;
+      color: var(--clr-text);
+      font-family: inherit;
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .form-input:focus, .form-select:focus, .form-textarea:focus {
+      border-color: var(--clr-gold);
+      box-shadow: 0 0 10px rgba(201,168,76,0.25);
+    }
+    .form-hint {
+      font-size: 0.76rem;
+      color: var(--clr-text-muted);
+      margin-top: 0.2rem;
+    }
+
+    /* Chips container */
+    .chips-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 0.4rem;
+    }
+    .strength-chip, .size-chip {
+      background: #111;
+      border: 1px solid var(--clr-border);
+      color: var(--clr-text-muted);
+      padding: 0.4rem 0.85rem;
+      border-radius: 999px;
+      font-size: 0.88rem;
+      cursor: pointer;
+      user-select: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .strength-chip:hover, .size-chip:hover {
+      border-color: var(--clr-gold);
+      color: #fff;
+    }
+    .strength-chip.active, .size-chip.active {
+      background: rgba(201,168,76,0.2);
+      border-color: var(--clr-gold);
+      color: var(--clr-gold-light);
+      font-weight: 700;
+      box-shadow: 0 0 10px rgba(201,168,76,0.2);
+    }
+    .chip-delete-btn {
+      background: none;
+      border: none;
+      color: #ff6b6b;
+      cursor: pointer;
+      font-size: 1rem;
+      line-height: 1;
+      padding: 0 0.1rem 0 0.3rem;
+      opacity: 0.7;
+      transition: opacity 0.2s;
+    }
+    .chip-delete-btn:hover {
+      opacity: 1;
+    }
+
+    /* Add Size inline form */
+    .add-size-row {
+      display: flex;
+      gap: 0.6rem;
+      margin-top: 0.8rem;
+      max-width: 380px;
+    }
+    .add-size-row .form-input {
+      flex: 1;
+    }
+
+    /* Perfume List Item */
+    .perfumes-list-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.2rem;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+    }
+    .perfumes-search-input {
+      max-width: 300px;
+      width: 100%;
+    }
+    .perfume-item-card {
+      background: #111;
+      border: 1px solid var(--clr-border);
+      border-radius: var(--radius-sm);
+      padding: 1.2rem;
+      margin-bottom: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .perfume-item-card:hover {
+      border-color: var(--clr-border-glow);
+    }
+    .perfume-item-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+    }
+    .perfume-item-info {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      flex-wrap: wrap;
+    }
+    .perfume-name {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--clr-text);
+    }
+    .perfume-meta-pill {
+      font-size: 0.75rem;
+      padding: 0.2rem 0.6rem;
+      background: rgba(255,255,255,0.06);
+      border-radius: 999px;
+      color: var(--clr-text-muted);
+    }
+    .perfume-item-strengths {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+    .perfume-item-strengths-label {
+      font-size: 0.8rem;
+      color: var(--clr-text-muted);
+    }
+    .btn-remove-perfume {
+      background: rgba(192, 57, 43, 0.15);
+      border: 1px solid rgba(192, 57, 43, 0.4);
+      color: #ff7675;
+      padding: 0.45rem 0.9rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.82rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .btn-remove-perfume:hover {
+      background: rgba(192, 57, 43, 0.35);
+      border-color: #ff7675;
+      color: #fff;
+    }
+
+    /* Empty state */
+    .empty-state {
+      text-align: center;
+      padding: 3rem 1.5rem;
+      color: var(--clr-text-muted);
+    }
+    .empty-state-icon {
+      font-size: 3rem;
+      margin-bottom: 0.8rem;
+    }
+
+    /* Modal for delete confirm */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.85);
+      backdrop-filter: blur(6px);
+      z-index: 10000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+    }
+    .modal-overlay.hidden {
+      display: none;
+    }
+    .modal-dialog {
+      background: #161616;
+      border: 1px solid var(--clr-border);
+      border-radius: var(--radius-md);
+      padding: 2rem;
+      max-width: 440px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+      animation: popIn 0.2s ease-out;
+    }
+    .modal-actions {
+      display: flex;
+      justify-content: center;
+      gap: 0.8rem;
+      margin-top: 1.5rem;
+    }
+
+    /* Toast */
+    #toast {
+      position: fixed;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: #1a1a1a;
+      border: 1px solid var(--clr-gold);
+      color: var(--clr-text);
+      padding: 0.8rem 1.6rem;
+      border-radius: 999px;
+      font-size: 0.92rem;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.8), var(--shadow-gold);
+      z-index: 11000;
+      opacity: 0;
+      transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s ease;
+      pointer-events: none;
+    }
+    #toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+
+    @media (max-width: 600px) {
+      .admin-nav-inner {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .admin-nav-actions {
+        justify-content: space-between;
+      }
+      .workflow-banner {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .card-head {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .perfume-item-top {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+<body class="admin-body">
+
+<!-- ════════════════════════════════════════════════
+     1. PASSWORD AUTH OVERLAY
+     ════════════════════════════════════════════════ -->
+<div id="auth-overlay" role="dialog" aria-modal="true" aria-labelledby="auth-title">
+  <div class="auth-box">
+    <div class="auth-icon" aria-hidden="true">🔒</div>
+    <h1 id="auth-title" class="auth-title">لوحة تحكم كاسم بيرفيوم</h1>
+    <p class="auth-subtitle">أدخل كلمة المرور للمتابعة إلى إدارة العطور</p>
+
+    <form id="auth-form" onsubmit="handleLogin(event)">
+      <div class="auth-input-wrap">
+        <input
+          type="password"
+          id="auth-password"
+          class="auth-input"
+          placeholder="••••••••"
+          autocomplete="current-password"
+          required
+          autofocus
+        />
+        <button
+          type="button"
+          class="toggle-pass-btn"
+          onclick="togglePasswordVisibility()"
+          aria-label="إظهار أو إخفاء كلمة المرور"
+          title="إظهار / إخفاء"
+        >👁️</button>
+      </div>
+      <p id="auth-error-msg" class="auth-error">كلمة المرور غير صحيحة، يرجى المحاولة مجدداً</p>
+      <button type="submit" class="btn btn-gold" style="width: 100%; margin-top: 0.8rem;">
+        دخول إلى لوحة التحكم ←
+      </button>
+    </form>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════
+     2. ADMIN NAVBAR
+     ════════════════════════════════════════════════ -->
+<header class="admin-nav">
+  <div class="admin-nav-inner">
+    <div class="admin-brand">
+      <span>🏺</span>
+      <span>كاسم بيرفيوم — الإدارة</span>
+    </div>
+    <div class="admin-nav-actions">
+      <div id="autosave-badge" class="status-badge" title="حالة الحفظ">
+        <span>✓</span>
+        <span id="autosave-text">تم الحفظ تلقائياً</span>
+      </div>
+      <a href="index.html" target="_blank" rel="noopener" class="btn btn-outline" style="padding: 0.4rem 0.8rem; font-size: 0.85rem;">
+        👁️ معاينة المتجر
+      </a>
+      <button id="btn-export-top" class="btn btn-gold" onclick="downloadJSON()" style="padding: 0.4rem 0.9rem; font-size: 0.85rem;">
+        📥 تحميل perfumes.json
+      </button>
+      <button onclick="handleLogout()" class="btn btn-outline" style="padding: 0.4rem 0.75rem; font-size: 0.85rem;" title="تسجيل الخروج">
+        🚪 خروج
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- ════════════════════════════════════════════════
+     3. MAIN DASHBOARD CONTENT
+     ════════════════════════════════════════════════ -->
+<main class="admin-container">
+
+  <!-- Workflow Banner -->
+  <section class="workflow-banner">
+    <div class="workflow-text">
+      <h2>💡 كيف تعمل لوحة التحكم؟</h2>
+      <p>
+        1. قم بإضافة وتعديل العطور وتحديد التراكيز (x2 إلى x10) وضبط إعدادات المتجر.<br/>
+        2. التعديلات <strong>تُحفظ تلقائياً</strong> كمسودة في متصفحك حتى لا تضيع بياناتك.<br/>
+        3. عند الانتهاء، اضغط على زر <strong>«تحميل perfumes.json»</strong> واستبدل الملف القديم في مجلد موقعك.
+      </p>
+    </div>
+    <div>
+      <button class="btn btn-gold" onclick="downloadJSON()">
+        📥 تحميل perfumes.json الآن
+      </button>
+    </div>
+  </section>
+
+  <!-- ──────────────────────────────────────────
+       SECTION: STORE SETTINGS
+       ────────────────────────────────────────── -->
+  <section class="admin-card" aria-labelledby="settings-heading">
+    <div class="card-head">
+      <div>
+        <h2 id="settings-heading">⚙️ إعدادات المتجر</h2>
+        <p>اسم المتجر ورقم الواتساب والأحجام المتوفرة للزبائن</p>
+      </div>
+      <div>
+        <button class="btn btn-outline" onclick="resetToOriginalData()" style="font-size:0.8rem; padding: 0.35rem 0.7rem;">
+          🔄 استعادة البيانات الأصلية
+        </button>
+      </div>
+    </div>
+
+    <div class="form-grid">
+      <!-- Shop Name -->
+      <div class="form-group">
+        <label for="setting-shop-name" class="form-label">
+          <span>اسم المتجر:</span>
+          <small>يظهر في المتجر ورسائل الواتساب</small>
+        </label>
+        <input
+          type="text"
+          id="setting-shop-name"
+          class="form-input"
+          placeholder="مثال: كاسم بيرفيوم"
+          oninput="updateSetting('shopName', this.value)"
+        />
+      </div>
+
+      <!-- WhatsApp Number -->
+      <div class="form-group">
+        <label for="setting-whatsapp" class="form-label">
+          <span>رقم الواتساب للطلبات:</span>
+          <small>أرقام فقط (بدون +)</small>
+        </label>
+        <input
+          type="tel"
+          id="setting-whatsapp"
+          class="form-input"
+          placeholder="مثال: 213551234567"
+          oninput="handleWhatsAppInput(this)"
+        />
+        <span class="form-hint">أدخل رمز البلد يليه الرقم بدون أصفار أو مسافات (مثال: 213XXXXXXXXX).</span>
+      </div>
+    </div>
+
+    <!-- Sizes -->
+    <div class="form-group" style="margin-top: 1rem;">
+      <label class="form-label">
+        <span>الأحجام المتوفرة (مل):</span>
+        <small>اضغط على الحجم لتفعيله أو إيقافه</small>
+      </label>
+      <div id="sizes-chips-container" class="chips-group">
+        <!-- Rendered by JS -->
+      </div>
+
+      <!-- Add New Size -->
+      <div class="add-size-row">
+        <input
+          type="text"
+          id="new-size-input"
+          class="form-input"
+          placeholder="حجم جديد (مثال: 75 أو 75 ml)"
+          onkeydown="if(event.key==='Enter'){event.preventDefault(); addNewSize();}"
+        />
+        <button type="button" class="btn btn-outline" onclick="addNewSize()">
+          ➕ إضافة حجم
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ──────────────────────────────────────────
+       SECTION: ADD NEW PERFUME
+       ────────────────────────────────────────── -->
+  <section class="admin-card" aria-labelledby="add-perfume-heading">
+    <div class="card-head">
+      <div>
+        <h2 id="add-perfume-heading">✨ إضافة عطر جديد</h2>
+        <p>أدخل اسم العطر واختر التراكيز المتوفرة (جميع التراكيز مختارة تلقائياً)</p>
+      </div>
+    </div>
+
+    <form id="add-perfume-form" onsubmit="handleAddPerfume(event)">
+      <div class="form-grid">
+        <!-- Perfume Name -->
+        <div class="form-group" style="grid-column: 1 / -1;">
+          <label for="perfume-name-input" class="form-label">
+            <span>اسم العطر: <span style="color:var(--clr-gold);">*</span></span>
+            <small>مطلوب</small>
+          </label>
+          <input
+            type="text"
+            id="perfume-name-input"
+            class="form-input"
+            placeholder="مثال: عود الملوك أو Sauvage أو ليالي الأندلس"
+            required
+          />
+        </div>
+
+        <!-- Optional Category -->
+        <div class="form-group">
+          <label for="perfume-category-select" class="form-label">الفئة:</label>
+          <select id="perfume-category-select" class="form-select">
+            <option value="unisex">مشترك (Unisex)</option>
+            <option value="men">رجالي (Men)</option>
+            <option value="women">نسائي (Women)</option>
+            <option value="oils">زيوت عطرية (Oils)</option>
+          </select>
+        </div>
+
+        <!-- Optional Price -->
+        <div class="form-group">
+          <label for="perfume-price-input" class="form-label">السعر الافتراضي (دج):</label>
+          <input
+            type="number"
+            id="perfume-price-input"
+            class="form-input"
+            placeholder="2000"
+            value="2000"
+            min="100"
+            step="50"
+          />
+        </div>
+
+        <!-- Optional Description -->
+        <div class="form-group" style="grid-column: 1 / -1;">
+          <label for="perfume-desc-input" class="form-label">وصف مختصر (اختياري):</label>
+          <input
+            type="text"
+            id="perfume-desc-input"
+            class="form-input"
+            placeholder="مثال: عطر فاخر بثبات عالي وفوحان مميز يلفت الأنظار"
+          />
+        </div>
+      </div>
+
+      <!-- Strengths Chips Selection (x2 to x10) -->
+      <div class="form-group" style="margin-top: 1rem;">
+        <div class="form-label">
+          <span>التراكيز المتوفرة لهذا العطر (x2 إلى x10): <span style="color:var(--clr-gold);">*</span></span>
+          <div>
+            <button type="button" class="btn btn-outline" style="font-size:0.75rem; padding: 0.2rem 0.5rem;" onclick="selectAllNewStrengths(true)">
+              تحديد الكل
+            </button>
+            <button type="button" class="btn btn-outline" style="font-size:0.75rem; padding: 0.2rem 0.5rem;" onclick="selectAllNewStrengths(false)">
+              إلغاء التحديد
+            </button>
+          </div>
+        </div>
+        <p class="form-hint" style="margin-bottom:0.4rem;">
+          انقر على أي تركيز لتحديده أو إلغاء تحديده (جميع التراكيز مختارة افتراضياً).
+        </p>
+
+        <div id="new-strengths-container" class="chips-group">
+          <!-- Populated by JS: x2 to x10, all selected by default -->
+        </div>
+        <p id="new-strengths-error" class="form-hint" style="color:#ff6b6b; display:none; margin-top:0.4rem;">
+          ⚠️ يرجى اختيار تركيز واحد على الأقل.
+        </p>
+      </div>
+
+      <div style="margin-top: 1.5rem; display: flex; justify-content: flex-end;">
+        <button type="submit" class="btn btn-gold" style="padding: 0.75rem 1.8rem; font-size: 1rem;">
+          ➕ إضافة العطر إلى القائمة
+        </button>
+      </div>
+    </form>
+  </section>
+
+  <!-- ──────────────────────────────────────────
+       SECTION: LIST ALL PERFUMES
+       ────────────────────────────────────────── -->
+  <section class="admin-card" aria-labelledby="perfumes-list-heading">
+    <div class="card-head">
+      <div>
+        <h2 id="perfumes-list-heading">
+          <span>📦 قائمة العطور الحالية</span>
+          <span id="perfumes-count-badge" class="perfume-meta-pill" style="font-size:0.9rem; color:var(--clr-gold);">
+            (0 عطر)
+          </span>
+        </h2>
+        <p>يمكنك تشغيل وإيقاف أي تركيز لكل عطر مباشرة، أو حذف العطر</p>
+      </div>
+    </div>
+
+    <!-- Search / Filter -->
+    <div class="perfumes-list-header">
+      <input
+        type="search"
+        id="perfume-search-input"
+        class="form-input perfumes-search-input"
+        placeholder="🔍 ابحث في العطور بالاسم..."
+        oninput="handleSearchPerfumes(this.value)"
+      />
+      <div style="font-size: 0.82rem; color: var(--clr-text-muted);">
+        انقر على رقاقة التركيز (x2 - x10) لتفعيلها أو تعطيلها فوراً
+      </div>
+    </div>
+
+    <!-- Perfumes Container -->
+    <div id="perfumes-list-container">
+      <!-- Rendered by JS -->
+    </div>
+  </section>
+
+</main>
+
+<!-- Delete Confirmation Modal -->
+<div id="delete-modal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="delete-modal-title">
+  <div class="modal-dialog">
+    <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">⚠️</div>
+    <h3 id="delete-modal-title" style="color: var(--clr-gold); font-size: 1.25rem; margin-bottom: 0.5rem;">تأكيد حذف العطر</h3>
+    <p id="delete-modal-text" style="color: var(--clr-text-muted); font-size: 0.95rem;">هل أنت متأكد من حذف هذا العطر؟</p>
+    <div class="modal-actions">
+      <button id="btn-confirm-delete" class="btn btn-remove-perfume" style="padding: 0.6rem 1.4rem;">
+        نعم، احذف العطر
+      </button>
+      <button class="btn btn-outline" onclick="closeDeleteModal()" style="padding: 0.6rem 1.4rem;">
+        إلغاء
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast element -->
+<div id="toast" role="status" aria-live="polite"></div>
+
+<!-- ════════════════════════════════════════════════
+     4. JAVASCRIPT LOGIC
+     ════════════════════════════════════════════════ -->
+<script>
+/**
+ * ============================================================
+ *  ADMIN DASHBOARD CONFIGURATION
+ * ============================================================
+ *  Change your admin password below:
+ */
+const ADMIN_PASSWORD = "admin"; // ← CHANGE YOUR PASSWORD HERE
+
+/* Strengths definitions x2 to x10 */
+const ALL_STRENGTHS = ["x2", "x3", "x4", "x5", "x6", "x7", "x8", "x9", "x10"];
+
+/* Storage keys */
+const DRAFT_KEY = "kacem_admin_draft";
+const AUTH_KEY  = "kacem_admin_authenticated";
+
+/* Category labels in Arabic */
+const CATEGORY_NAMES = {
+  oils:   "زيوت عطرية",
+  men:    "رجالي",
+  women:  "نسائي",
+  unisex: "مشترك"
+};
+
+/* Application State */
+let appData = {
+  shopName: "كاسم بيرفيوم",
+  whatsapp: "213XXXXXXXXX",
+  sizes: [
+    { label: "12 ml", enabled: true },
+    { label: "30 ml", enabled: true },
+    { label: "50 ml", enabled: true },
+    { label: "100 ml", enabled: true }
+  ],
+  perfumes: []
+};
+
+/* State for the Add Perfume form (new perfume strengths) */
+let newPerfumeStrengths = [...ALL_STRENGTHS]; // all x2 to x10 selected by default
+
+/* Active search query */
+let searchQuery = "";
+
+/* Target perfume ID for delete confirmation */
+let pendingDeleteId = null;
+
+/* ──────────────────────────────────────────────────────────
+   XSS PROTECTION HELPER
+   Always escape user-provided strings before inserting into DOM
+   ────────────────────────────────────────────────────────── */
+function escapeHTML(str) {
+  if (str === null || str === undefined) return "";
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+/* ──────────────────────────────────────────────────────────
+   AUTHENTICATION LOGIC
+   ────────────────────────────────────────────────────────── */
+function checkAuth() {
+  const isAuth = sessionStorage.getItem(AUTH_KEY) === "true";
+  const overlay = document.getElementById("auth-overlay");
+  if (isAuth) {
+    overlay.classList.add("hidden");
+  } else {
+    overlay.classList.remove("hidden");
+    setTimeout(() => {
+      const passInput = document.getElementById("auth-password");
+      if (passInput) passInput.focus();
+    }, 100);
+  }
+}
+
+function handleLogin(e) {
+  e.preventDefault();
+  const passInput = document.getElementById("auth-password");
+  const errorMsg  = document.getElementById("auth-error-msg");
+  const entered   = passInput.value;
+
+  if (entered === ADMIN_PASSWORD) {
+    sessionStorage.setItem(AUTH_KEY, "true");
+    errorMsg.classList.remove("visible");
+    document.getElementById("auth-overlay").classList.add("hidden");
+    passInput.value = "";
+    showToast("👋 مرحباً بك في لوحة التحكم!");
+  } else {
+    errorMsg.classList.add("visible");
+    passInput.focus();
+    passInput.select();
+  }
+}
+
+function handleLogout() {
+  sessionStorage.removeItem(AUTH_KEY);
+  checkAuth();
+  showToast("تم تسجيل الخروج بنجاح");
+}
+
+function togglePasswordVisibility() {
+  const input = document.getElementById("auth-password");
+  if (input.type === "password") {
+    input.type = "text";
+  } else {
+    input.type = "password";
+  }
+}
+
+/* ──────────────────────────────────────────────────────────
+   INITIALIZATION & DATA LOADING
+   ────────────────────────────────────────────────────────── */
+document.addEventListener("DOMContentLoaded", () => {
+  checkAuth();
+  renderNewPerfumeStrengthsChips();
+  loadData();
+});
+
+async function loadData() {
+  // 1. Try to load draft from localStorage
+  const draft = localStorage.getItem(DRAFT_KEY);
+  if (draft) {
+    try {
+      const parsed = JSON.parse(draft);
+      if (parsed && Array.isArray(parsed.perfumes)) {
+        appData = normalizeData(parsed);
+        renderAll();
+        indicateAutosave("تم استعادة مسودتك المحفوظة ✓");
+        return;
+      }
+    } catch (err) {
+      console.warn("Could not parse draft:", err);
+    }
+  }
+
+  // 2. Fetch perfumes.json
+  try {
+    const res = await fetch("perfumes.json?v=" + Date.now());
+    if (res.ok) {
+      const data = await res.json();
+      appData = normalizeData(data);
+      saveDraft(false);
+      renderAll();
+      indicateAutosave("تم تحميل perfumes.json ✓");
+      return;
+    }
+  } catch (e) {
+    console.warn("Could not fetch perfumes.json:", e);
+  }
+
+  // 3. Fallback defaults if neither draft nor fetch works
+  renderAll();
+}
+
+/**
+ * Ensures data matches expected schema with valid sizes & strengths
+ */
+function normalizeData(data) {
+  const norm = {
+    shopName: data.shopName || "كاسم بيرفيوم",
+    whatsapp: (data.whatsapp || "213XXXXXXXXX").replace(/\D/g, ""),
+    sizes: [],
+    perfumes: []
+  };
+
+  // Normalize sizes
+  if (Array.isArray(data.sizes)) {
+    norm.sizes = data.sizes.map(s => {
+      if (typeof s === "string") {
+        return { label: s, enabled: true };
+      }
+      return { label: s.label || "50 ml", enabled: s.enabled !== false };
+    });
+  } else {
+    norm.sizes = [
+      { label: "12 ml", enabled: true },
+      { label: "30 ml", enabled: true },
+      { label: "50 ml", enabled: true },
+      { label: "100 ml", enabled: true }
+    ];
+  }
+
+  // Normalize perfumes
+  if (Array.isArray(data.perfumes)) {
+    norm.perfumes = data.perfumes.map((p, idx) => ({
+      id: p.id || (Date.now() + idx),
+      name: p.name || "عطر بدون اسم",
+      nameEn: p.nameEn || "",
+      category: p.category || "unisex",
+      price: typeof p.price === "number" ? p.price : 2000,
+      image: p.image || "",
+      strengths: Array.isArray(p.strengths) && p.strengths.length > 0
+        ? p.strengths
+        : [...ALL_STRENGTHS],
+      notes: p.notes || { top: "", heart: "", base: "" },
+      description: p.description || "",
+      inStock: p.inStock !== false,
+      bestSeller: !!p.bestSeller
+    }));
+  }
+
+  return norm;
+}
+
+/* ──────────────────────────────────────────────────────────
+   AUTOSAVE ENGINE
+   ────────────────────────────────────────────────────────── */
+let autosaveTimeout = null;
+function triggerAutosave() {
+  saveDraft(true);
+}
+
+function saveDraft(showVisual = true) {
+  try {
+    localStorage.setItem(DRAFT_KEY, JSON.stringify(appData, null, 2));
+    if (showVisual) {
+      const now = new Date();
+      const timeStr = now.toLocaleTimeString("ar-DZ", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
+      indicateAutosave(`تم الحفظ تلقائياً (${timeStr}) ✓`);
+    }
+  } catch (err) {
+    console.error("Autosave failed:", err);
+  }
+}
+
+function indicateAutosave(text) {
+  const badge = document.getElementById("autosave-badge");
+  const badgeText = document.getElementById("autosave-text");
+  if (badgeText) badgeText.textContent = text;
+  if (badge) {
+    badge.classList.remove("saving");
+    badge.style.opacity = "1";
+  }
+}
+
+async function resetToOriginalData() {
+  if (!confirm("هل تريد استعادة البيانات الأصلية من ملف perfumes.json؟ ستفقد التعديلات غير المحفوظة في المسودة.")) {
+    return;
+  }
+  try {
+    const res = await fetch("perfumes.json?v=" + Date.now());
+    if (res.ok) {
+      const data = await res.json();
+      appData = normalizeData(data);
+      saveDraft(true);
+      renderAll();
+      showToast("✅ تمت استعادة البيانات الأصلية بنجاح");
+      return;
+    }
+  } catch (e) {
+    console.error(e);
+  }
+  localStorage.removeItem(DRAFT_KEY);
+  location.reload();
+}
+
+/* ──────────────────────────────────────────────────────────
+   RENDER FUNCTIONS
+   ────────────────────────────────────────────────────────── */
+function renderAll() {
+  renderSettings();
+  renderPerfumesList();
+}
+
+function renderSettings() {
+  // Shop name
+  const nameInput = document.getElementById("setting-shop-name");
+  if (nameInput) nameInput.value = appData.shopName;
+
+  // WhatsApp
+  const waInput = document.getElementById("setting-whatsapp");
+  if (waInput) waInput.value = appData.whatsapp;
+
+  // Sizes chips
+  renderSizesChips();
+}
+
+function renderSizesChips() {
+  const container = document.getElementById("sizes-chips-container");
+  if (!container) return;
+
+  container.innerHTML = appData.sizes.map((s, idx) => {
+    const activeClass = s.enabled ? "active" : "";
+    const icon = s.enabled ? "✓" : "✕";
+    return `
+      <div class="size-chip ${activeClass}" onclick="toggleSizeEnabled(${idx})" title="انقر لتفعيل أو إيقاف الحجم">
+        <span>${icon}</span>
+        <span>${escapeHTML(s.label)}</span>
+        <button
+          type="button"
+          class="chip-delete-btn"
+          onclick="event.stopPropagation(); removeSize(${idx})"
+          aria-label="حذف الحجم"
+          title="حذف هذا الحجم"
+        >×</button>
+      </div>
+    `;
+  }).join("");
+}
+
+function toggleSizeEnabled(index) {
+  if (appData.sizes[index]) {
+    appData.sizes[index].enabled = !appData.sizes[index].enabled;
+    renderSizesChips();
+    triggerAutosave();
+  }
+}
+
+function removeSize(index) {
+  if (appData.sizes.length <= 1) {
+    showToast("⚠️ يجب أن يبقى حجم واحد على الأقل");
+    return;
+  }
+  appData.sizes.splice(index, 1);
+  renderSizesChips();
+  triggerAutosave();
+  showToast("تم حذف الحجم");
+}
+
+function addNewSize() {
+  const input = document.getElementById("new-size-input");
+  let val = input.value.trim();
+  if (!val) {
+    input.focus();
+    return;
+  }
+
+  // Format e.g. "75" -> "75 ml"
+  if (/^\d+$/.test(val)) {
+    val = `${val} ml`;
+  } else if (!val.toLowerCase().includes("ml") && !val.includes("مل")) {
+    val = `${val} ml`;
+  }
+
+  // Check duplicate
+  const exists = appData.sizes.some(s => s.label.toLowerCase() === val.toLowerCase());
+  if (exists) {
+    showToast("⚠️ هذا الحجم موجود بالفعل");
+    return;
+  }
+
+  appData.sizes.push({ label: val, enabled: true });
+  input.value = "";
+  renderSizesChips();
+  triggerAutosave();
+  showToast(`✅ تمت إضافة الحجم: ${val}`);
+}
+
+function updateSetting(key, val) {
+  appData[key] = val;
+  triggerAutosave();
+}
+
+function handleWhatsAppInput(input) {
+  // Strip non-digits
+  const clean = input.value.replace(/\D/g, "");
+  input.value = clean;
+  appData.whatsapp = clean;
+  triggerAutosave();
+}
+
+/* ──────────────────────────────────────────────────────────
+   ADD PERFUME — STRENGTHS CHIPS (x2 to x10)
+   ────────────────────────────────────────────────────────── */
+function renderNewPerfumeStrengthsChips() {
+  const container = document.getElementById("new-strengths-container");
+  if (!container) return;
+
+  container.innerHTML = ALL_STRENGTHS.map(st => {
+    const isSelected = newPerfumeStrengths.includes(st);
+    const activeClass = isSelected ? "active" : "";
+    const icon = isSelected ? "✓" : "+";
+    return `
+      <button
+        type="button"
+        class="strength-chip ${activeClass}"
+        onclick="toggleNewStrength('${st}')"
+        aria-pressed="${isSelected}"
+      >
+        <span>${icon}</span>
+        <span>${st}</span>
+      </button>
+    `;
+  }).join("");
+}
+
+function toggleNewStrength(st) {
+  if (newPerfumeStrengths.includes(st)) {
+    newPerfumeStrengths = newPerfumeStrengths.filter(x => x !== st);
+  } else {
+    newPerfumeStrengths.push(st);
+    // Maintain natural order x2..x10
+    newPerfumeStrengths.sort((a, b) => parseInt(a.slice(1)) - parseInt(b.slice(1)));
+  }
+  renderNewPerfumeStrengthsChips();
+  validateNewStrengths();
+}
+
+function selectAllNewStrengths(selectAll) {
+  if (selectAll) {
+    newPerfumeStrengths = [...ALL_STRENGTHS];
+  } else {
+    newPerfumeStrengths = [];
+  }
+  renderNewPerfumeStrengthsChips();
+  validateNewStrengths();
+}
+
+function validateNewStrengths() {
+  const errEl = document.getElementById("new-strengths-error");
+  if (newPerfumeStrengths.length === 0) {
+    if (errEl) errEl.style.display = "block";
+    return false;
+  } else {
+    if (errEl) errEl.style.display = "none";
+    return true;
+  }
+}
+
+function handleAddPerfume(e) {
+  e.preventDefault();
+
+  const nameInput = document.getElementById("perfume-name-input");
+  const name = nameInput.value.trim();
+
+  // 1. Validate name
+  if (!name) {
+    nameInput.focus();
+    showToast("⚠️ يرجى إدخال اسم العطر");
+    return;
+  }
+
+  // 2. Validate at least one strength selected
+  if (!validateNewStrengths()) {
+    showToast("⚠️ يرجى اختيار تركيز واحد على الأقل من (x2 إلى x10)");
+    return;
+  }
+
+  const category = document.getElementById("perfume-category-select").value || "unisex";
+  const priceInput = document.getElementById("perfume-price-input");
+  const price = parseInt(priceInput.value, 10) || 2000;
+  const desc = document.getElementById("perfume-desc-input").value.trim();
+
+  // Create new perfume object
+  const newPerfume = {
+    id: Date.now(),
+    name: name,
+    nameEn: "",
+    category: category,
+    price: price,
+    image: "",
+    strengths: [...newPerfumeStrengths],
+    notes: { top: "", heart: "", base: "" },
+    description: desc || "عطر فاخر أصيل بثبات عالي وفوحان رائع.",
+    inStock: true,
+    bestSeller: false
+  };
+
+  // Add to the top of the array
+  appData.perfumes.unshift(newPerfume);
+
+  // Reset form
+  nameInput.value = "";
+  document.getElementById("perfume-desc-input").value = "";
+  newPerfumeStrengths = [...ALL_STRENGTHS]; // reset all selected by default
+  renderNewPerfumeStrengthsChips();
+
+  // Refresh UI and save draft
+  renderPerfumesList();
+  triggerAutosave();
+
+  showToast(`✅ تمت إضافة عطر «${name}» بنجاح!`);
+}
+
+/* ──────────────────────────────────────────────────────────
+   PERFUMES LIST & STRENGTH TOGGLE
+   ────────────────────────────────────────────────────────── */
+function handleSearchPerfumes(q) {
+  searchQuery = q.trim().toLowerCase();
+  renderPerfumesList();
+}
+
+function renderPerfumesList() {
+  const container = document.getElementById("perfumes-list-container");
+  const countBadge = document.getElementById("perfumes-count-badge");
+  if (!container) return;
+
+  const total = appData.perfumes.length;
+  if (countBadge) countBadge.textContent = `(${total} عطر)`;
+
+  // Filter based on search query
+  const filtered = appData.perfumes.filter(p => {
+    if (!searchQuery) return true;
+    return (
+      p.name.toLowerCase().includes(searchQuery) ||
+      (p.nameEn && p.nameEn.toLowerCase().includes(searchQuery)) ||
+      (CATEGORY_NAMES[p.category] && CATEGORY_NAMES[p.category].includes(searchQuery))
+    );
+  });
+
+  if (filtered.length === 0) {
+    container.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-state-icon">🔍</div>
+        <p>لا توجد عطور تطابق البحث.</p>
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = filtered.map(p => {
+    const catLabel = CATEGORY_NAMES[p.category] || p.category;
+    const strengthsHTML = ALL_STRENGTHS.map(st => {
+      const isEnabled = Array.isArray(p.strengths) && p.strengths.includes(st);
+      const activeClass = isEnabled ? "active" : "";
+      const icon = isEnabled ? "✓" : "✕";
+      return `
+        <button
+          type="button"
+          class="strength-chip ${activeClass}"
+          onclick="togglePerfumeStrength(${p.id}, '${st}')"
+          title="${isEnabled ? 'تركيز مفعّل — انقر لتعطيله' : 'تركيز معطّل — انقر لتفعيله'}"
+        >
+          <span>${icon}</span>
+          <span>${st}</span>
+        </button>
+      `;
+    }).join("");
+
+    return `
+      <article class="perfume-item-card" data-id="${p.id}">
+        <div class="perfume-item-top">
+          <div class="perfume-item-info">
+            <span class="perfume-name">${escapeHTML(p.name)}</span>
+            ${p.nameEn ? `<span class="perfume-meta-pill">${escapeHTML(p.nameEn)}</span>` : ""}
+            <span class="perfume-meta-pill">${escapeHTML(catLabel)}</span>
+            <span class="perfume-meta-pill" style="color:var(--clr-gold);">${p.price.toLocaleString("ar-DZ")} دج</span>
+          </div>
+          <div>
+            <button
+              type="button"
+              class="btn-remove-perfume"
+              onclick="promptRemovePerfume(${p.id}, '${escapeHTML(p.name.replace(/'/g, "\\'"))}')"
+              aria-label="حذف عطر ${escapeHTML(p.name)}"
+            >
+              <span>🗑️</span>
+              <span>حذف العطر</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="perfume-item-strengths">
+          <span class="perfume-item-strengths-label">التراكيز المتوفرة (انقر على أي تركيز لتشغيله أو إيقافه):</span>
+          <div class="chips-group">
+            ${strengthsHTML}
+          </div>
+        </div>
+      </article>
+    `;
+  }).join("");
+}
+
+/**
+ * Toggles a strength ON or OFF for a specific perfume
+ */
+function togglePerfumeStrength(perfumeId, strength) {
+  const p = appData.perfumes.find(x => x.id === perfumeId);
+  if (!p) return;
+
+  if (!Array.isArray(p.strengths)) {
+    p.strengths = [...ALL_STRENGTHS];
+  }
+
+  if (p.strengths.includes(strength)) {
+    // Validate that at least one strength remains
+    if (p.strengths.length <= 1) {
+      showToast("⚠️ يجب أن يبقى تركيز واحد على الأقل مفعلاً لهذا العطر");
+      return;
+    }
+    p.strengths = p.strengths.filter(s => s !== strength);
+  } else {
+    p.strengths.push(strength);
+    p.strengths.sort((a, b) => parseInt(a.slice(1)) - parseInt(b.slice(1)));
+  }
+
+  renderPerfumesList();
+  triggerAutosave();
+}
+
+/* ──────────────────────────────────────────────────────────
+   REMOVE PERFUME (WITH CONFIRMATION MODAL)
+   ────────────────────────────────────────────────────────── */
+function promptRemovePerfume(id, name) {
+  pendingDeleteId = id;
+  const modal = document.getElementById("delete-modal");
+  const text = document.getElementById("delete-modal-text");
+  text.innerHTML = `هل أنت متأكد من حذف عطر <strong>«${escapeHTML(name)}»</strong> نهائياً من القائمة؟`;
+  modal.classList.remove("hidden");
+
+  document.getElementById("btn-confirm-delete").onclick = () => {
+    confirmRemovePerfume();
+  };
+}
+
+function closeDeleteModal() {
+  pendingDeleteId = null;
+  document.getElementById("delete-modal").classList.add("hidden");
+}
+
+function confirmRemovePerfume() {
+  if (!pendingDeleteId) return;
+  const target = appData.perfumes.find(p => p.id === pendingDeleteId);
+  const name = target ? target.name : "";
+
+  appData.perfumes = appData.perfumes.filter(p => p.id !== pendingDeleteId);
+  closeDeleteModal();
+  renderPerfumesList();
+  triggerAutosave();
+  showToast(`🗑️ تم حذف عطر «${name}»`);
+}
+
+/* ──────────────────────────────────────────────────────────
+   DOWNLOAD perfumes.json
+   ────────────────────────────────────────────────────────── */
+function downloadJSON() {
+  try {
+    const dataStr = JSON.stringify(appData, null, 2);
+    const blob = new Blob([dataStr], { type: "application/json;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "perfumes.json";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+
+    showToast("📥 تم تحميل ملف perfumes.json بنجاح!");
+  } catch (err) {
+    console.error("Export failed:", err);
+    showToast("❌ حدث خطأ أثناء تحميل الملف");
+  }
+}
+
+/* ──────────────────────────────────────────────────────────
+   TOAST HELPER
+   ────────────────────────────────────────────────────────── */
+let toastTimer;
+function showToast(msg) {
+  const toast = document.getElementById("toast");
+  if (!toast) return;
+  toast.textContent = msg;
+  toast.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => {
+    toast.classList.remove("show");
+  }, 3200);
+}
+</script>
+</body>
+</html>
